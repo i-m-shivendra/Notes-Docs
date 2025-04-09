@@ -1,0 +1,646 @@
+kubectl version
+kubeadm version
+hostname
+kubectl get nodes
+kubectl get nodes -o wide
+kubectl get pods
+kubectl get pods -n -system
+kubectl get pods -n -system -o wide
+kubectl get ns
+kubectl get namespaces
+kubectl get pods -n kube-system
+kubectl get pods --namespace kube-system(Another way for top command)
+kubectl get pods -n kube-system -o wide
+kubectl get pods -namespace kube-system -o wide(Another way for top command)
+kubectl run first-pod --image nginx
+kubectl describe pod first-pod
+curl http://192.168.1.4
+
+--------------------------------------------------------------------------------
+Questions for practice:-
+
+create a pod using ubuntu image. Verify it state
+create a pod using simple service application and connect to it using IP.
+
+---------------------------------------------------------------------------------
+
+kubectl explain pod
+vi pod-demo.yaml
+kubectl create -f pod-demo.yaml
+kubectl apply -f pod-demo2.yaml
+delete pod pod-with-simpleservice
+kubectl exec -it simple-pod -- bash
+kubectl exec -it simple-pod -- pwd
+kubectl exec -it simple-pod -- ls
+kubectl exec -it simple-pod c-- bash
+
+----------------------------------------------------------------------------
+kubectl explain replicaset
+kubectl explain pod
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod1
+  labels:
+    app: testapp
+spec:
+  containers:
+  - name: cony1
+    image: nginx
+
+
+
+create simpleservice pod using yaml file.
+
+-----------------------------------------------------------------------------
+
+Labels and Selectors
+
+kubectl get pods --show-labels
+kubectl label pod pod1 owner=Jill team=development project=webapp
+kubectl get pods --selector owner=Jill
+kubectl get pods --selector owner=Jill --show-labels
+kubectl get pods -l  owner=Jill --show-labels
+kubectl get pods -l  owner!=Jill
+kubectl get pods -l  owner!=Jill --show-labels
+
+Imp Point - If we are using lettr only then only one -(hypen) and we are using the complete word then --(two hypens)
+Ex- 1. -l
+    2. --show
+
+---------------------------------------------------------------------------------
+Questions for practice-
+Create pod3 with labels owner=Jack, team=development
+Create pod4 with labels team=testing, project=webapp
+
+---------------------------------------------------------------------------------
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod1
+  labels:
+    app: testapp
+spec:
+  containers:
+  - name: cony1
+    image: nginx
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod2
+  labels:
+    app:testapp
+spec:
+  containers:
+  - name: cony2
+    image: nginx
+
+------------------------------------------------------------------------------
+
+kubectl get rs(for getting replica-set)
+kubectl create -f rs-demo.yaml(for creating replica set)
+kubectl describe rs
+kubectl describe rs my-replica-set
+
+--------------------------------------------------------------------------------
+
+
+kubectl explain deploy
+cat r-demo.yml
+vi deploy-dmo.yml
+kubectl create -f deploy-demo.yml
+kubectl describe deploy nginx-deployment
+kubectl describe r nginx-deployment-76dbcdf545
+kubectl describe rs nginx-deployment-76dbcdf545-zpgc6
+kubectl describe pod nginx-deployment-76dbcdf545-zpgc6
+kubectl explain deployment
+
+----------------------------------------------------------------------------
+                             Service
+
+apiVersion: v1
+kind: Service
+metadata: 
+  nam: simple-service
+spec:
+  type: ClusterIP    # Default Setting  
+  Selector:
+    app: simple     # To map service to deployment, use same label as mentioned in selector of the deployment
+  ports:
+    port: 9876       # Same as applicatio port
+
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  nam: simple-service
+spec:
+  type: ClusterIP    # Default Setting 
+  Selector:
+    app: test     # To map service to deployment, use same label as mentioned in selector of the deployment
+  ports:
+    port: 9876       # Same as application port
+
+
+
+
+
+
+kubectl get service
+kubectl get svc
+kubectl get ns
+kubecl get namespace
+kubecl get namespaces
+-default - used normally if we don't mention NS explicitly
+-kube-system - non-modifiable ns, contain the master node components
+# kubectl get pods 
+# kubectl get pods -n kube-system
+# kubectl get pods -namespace kube-system
+# kubectl get pods -namespaces kube-system
+# kubectl create ns dev-namespace
+# kubectl get ns
+# kubectl run dev-pod1 --image nginx (Pod created inside default namespace)
+# kubectl get pods -n dev-namespace
+# kubectl run dev-pod1 --image nginx -n dev-namespace
+# kubectl explain ns
+# kubectl create -f demo.yaml
+# kubectl get pods -n test-namespace
+
+---------------------------------------------------------------------------
+                            DAEMONSETS
+- Ensures that all nodes run a copy of a pod --> one copy each on particular worker node
+- Replica field is not used since copies are decided based on no. of nodes
+-- It can be used for collecting the resource utilization, log collections
+--> collection logs - Create a pd with the fluentd image
+
+# cp replicaset.yaml daemonset.yaml
+# vi daemonset.yaml
+$ kubectl create -f daemonset.yaml
+$ kubectl get ds
+$ kubectl get nodes
+$ kubectl get nodes -o wide
+$ kubectl delete pod myapp-ds-gffwk
+$ kubectl delete rs myapp-rs
+$ kubectl delete ds myapp-ds
+
+-------------------------------------------------------------------------------
+
+                                CONFIGMAPS
+- used to store non-confidential data in key-value pairs and allow other objects(Pod)
+ to use
+- Pods can consume ConfigMaps in the below 3 methods
+  1. As a 
+
+
+
+
+
+
+
+
+
+
+$ kubectl get cm
+$ kubectl get configmap
+$ kubectl explain cm
+$ kubectl explain configmap
+$ kubectl run test-pod --image nginx
+$ kubectl exec -it test-pod -- bash
+$ kubectl create -f configmap-example.yaml
+$ kubectl describe cm mysql-config
+$ kubectl create -f cm-demo.yaml
+
+----------------------------------------------------------------------------------
+
+                              SECRETS
+$ kubectl explain secret
+$ 
+
+-----------------------------------------------------------------------------------
+                               Jobs
+
+*       *      *      *     *
+30      5      25     3     *
+Minute  Hour  Date  Month   Day
+
+Run a job on every Friday at 6:15 PM
+15   18   *    *   Fri  command
+
+$ date
+$ kubectl explain cronjob
+$ 
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cjob
+spec:
+  # Run every 2 minute
+  schedule: "*/2 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cjobpod
+            image: centos:7
+            args:
+            - /bin/sh
+            - -c
+            - echo "printing one line is the job and get completed"
+          restartPolicy: Never 
+        backoffLimit: 4
+
+$ kubectl apply -f cronjob.yaml
+$ kubectl get cj(cronjob)
+$ kubectl get pods
+$ kubectl get pods
+$ kubectl get pods
+$ kubectl get cj
+$ kubectl get 
+$ kubectl logs cjob-28899602-8wht6
+
+
+-restartPolicy - Retry creating pods if they are  not running.
+--> Never --> Don't restart even if the pod fails
+--> Always --> Always try to restart the pod(failure or success)
+--> onFailure --> Restart only if the pod fails
+
+Consider restartPolicy is set to "Never"
+--> Pod1 failed --> Not restarted
+--> After 2 mins --> Pod2 is created --> failed --> Not restarted
+--> After 2 mins --> Pod3 is created --> failed --> Not restarted
+--> After 2 mins --> Pod4 is created --> failed --> Not restarted
+
+Since backoffLimit is 4, no more retries will take place for creating pods and cronjob will be declared as failed
+
+-backoffLimit --> no. of retries before considering a Job as a failed. Default is 6.
+
+
+---------------------------------------------------------------------------------
+
+kubectl get nodes
+kubectl describe node node01 | grep "Taint"
+kubectl describe node controlplane | grep "Taint"
+kubectl taint node node01 color=red:NoSchedule
+kubectl describe node node01 | grep "Taint"
+kubectl run pod1 --image=nginx
+kubectl get pods -o wide
+
+
+Traints and Tolerations:
+
+Node is tainted
+a. if pod is intolerant to it --> cannot be placed
+   --> restrict unwanted pods to be scheduled on the given node
+
+b. if pod is tolerant to it --> can be placed
+   --> allow wanted pods to be scheduled on the given node
+
+Syntax: kubectl taint nodes <node-name> key=value:taint-effect
+
+Taint effects are:
+- NoSchedule - Don't schedule if there is no matching toleration
+- PerfectNoSchedule - Preferably don't schedule if there is no matching toleration
+- NoExecute - Any pods including the one running on the nodes will be evicted unless
+they tolerate the taint, when the taint is applied
+
+
+Practice for NoExecute
+
+kubectl get pods
+kubctl get pods -o wide
+kubectl taint node node01 color=red:NoExecute
+
+
+vi pod.yaml
+vi pod.yaml
+cat pod.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+spec:
+  containers:
+  - name: nginx-cont
+    image: nginx
+  tolerations:
+  - key: "color"
+    operator: "Equal"
+    value: "red"
+    effect: "NoSchedule"
+
+
+2. Node Selectors:
+---------------------------
+- Select node for pod placement
+
+Assign labels to the nodes
+# kubectl label node <node-name> key=value
+
+Ex-
+# kubectl label node node1 app=webapp
+
+Match the labels and place the pod with matching labels on the node 
+nodeSelector:
+  app: webapp
+
+Ex: node-selector.yaml --> deployment
+
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: simpleservdep
+spec:
+  replicas: 5
+  selector:
+    matchLables:
+      app: simpleservice
+    template:
+      metadata:
+        labels: 
+          app: simpleservice
+      spec:
+        containers:
+        - name: my-simple-webapp
+          image: docker.io/nginx:run
+        nodeSelector:
+          app: webapp    #same as label given to the node node01
+
+Node affinity:
+
+
+vi node-affinity.yaml
+kubectl describe node node
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity
+spec:
+  affinity
+    nodeAffinity:
+      requiredDuringSchedulingIgnoreDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - prod
+          - key: nodenum
+            operator: In
+            values:
+            - node2
+  containers:
+  - name: with-node-affinity
+    image: docker.io/mhausenslabs/simpleservice:0.5.0
+
+--> Pod will be placed on te node with matching multiple labels
+ 
+II. preferredDuringSchedulingIgnoredDuringExecution
+III. requiredDuringSchedulingRequiredDuringExecution
+
+-------------------------------------------------------------------------------
+
+Persistent Volumes-
+
+Independent  
+
+# kubectl explain pv
+# kubectl explain PV
+
+
+
+
+---------------------------------------------------------------------------------
+
+                                 Tolerations
+Step 1: Add taint to node01
+# kubectl taint node node01 color=red:NoSchedule
+
+Step 2: Create a pod without toleration and check where it is plaed on node01
+# kubectl run test-pod1 --image nginx --> where it is placed
+
+Step 3: Create a pod with tolerations and check where it is placed
+PodSpec --> add tolerations to pod definition
+
+Syntax:
+
+tolerations-
+- key: "key"
+  operator: "Equal"
+  value: "value"
+  effect: "NoSchedule"
+
+
+Ex:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+spec:
+  containers:
+  - name: nginx-cont
+    image: nginx
+  tolerations:
+  - key: "color"
+    operator: "Equal"
+    value: "red"
+    effect: "NoSchedule"
+
+---------------------------------------------------------------------------------
+
+Cluster configuration --> Master(Control Plane) and Worker Nodes
+- Master Node --> API server, Scheduler, Controller, ETCD, kubelet, kube proxy
+- Worker Nodes --> kubelet, kube proxy
+
+Pods, Replica Set, Deployment, Services, DemonSet, ConfigMap, Secrets
+
+Jobs --> One time execution
+     --> Create pods
+     --> Does not delete the pod even when the task is completed
+
+CronJob --> Scheduled execution
+        --> *  *  *  *  *
+        --> Delete the pod once the job is completed
+
+Taints and Tolerations-->
+- Node is tainted -->  <key>=<value>
+- Pod --> Tolerate the taint --> Pod may placed on that node
+- Pod --> Does not tolerate the taint --> Pod will NEVER BE placed on that node
+
+
+Node Selector & Node Affinity or Anti-affinity-->
+- Node is labeled --> <key>=<value>
+- Pod --> placed on labeled node based on node selector value --> Equal or not equal
+- Pod --> placed on labeled node based on required or preferred --> In, Not In, Exists, Not Exists
+
+
+-----------------------------------------------------------------------------------
+
+Volumes --> Permanent storage independent of pod lifecycle
+
+- Persistent Volumes --> Access Mode, Storage capacity --> Eg: Node level
+  --> storage--> /var/temp/data --> Path must exist on every node where pod is            getting placed.
+
+- Persistent Volume Claim --> matching Access Mode, Less or equal capacity as that of Persistent Volume.
+
+-- Object --> Pod, RS, Deployment, etc.
+
+NFS --> Network File System --> Shared Storage --> Master Node
+
+-----------------------------------------------------------------------------------
+
+                             User Administrators
+
+
+1. Authentication - Who can access the cluster?
+
+- Admin     --> User
+- Developer --> User
+- End User  --> taken care by application by providing suitable credentials
+- Bots      --> Other processes or services or applications --> Service Accounts
+
+
+kube-apiserver authentication mechanism:
+I. static password file -->
+   Create list of users as csv --> password, username, userid --> userdetails.csv
+
+   open the file through which kube-apiserver pod is created in kube-system 
+   ns/etc/Kubernetes/manifests/kube-apiserver.yaml
+   --basic-auth-file=user-details.csv
+
+II. static token file-->
+    Specify tokens instead of passwords--> uer-token-details.csv
+    --toekn-auth-file=toekn-detail.csv
+
+III. Certificates
+    - generate certificates
+    - display certificate
+    # openssl x509 -in /etc/Kubernetes/pki/apiserver.crt text
+
+kubeconfig file - specify the details --> 
+
+----------------------------------------------------------------------------------
+
+2. Authorization --> what they can do?
+
+I. ABAC   -->
+
+II. RBAC  --> create role and associate users to role
+- Managing permissions for users:
+
+a. Role --> a role provides permission within a namespace
+Ex- role.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader-role
+  namespace: default
+rules:
+- apiGroups[""]
+
+---------------------------------------------------------------------------------
+ 
+
+# ls /etc/kubernetes/manifests/
+# cat /etc/kubernetes/manifests/kube-apiserver.yaml
+# kubectl explain role
+# vi role.yaml
+# kubectl apply -f role.yaml
+# kubectl get roles
+# kubectl explain role
+# vi rolebinding.yaml
+# kubectl apply -f rolebindig.yaml
+# kubectl get rolebinding
+# kubectl auth can-i get pods -n default --as=jill
+# kubectl auth can-i get pods -n kube-system --as=jill
+# kubectl run pod2 --image nginx --as=jill
+# kubectl delete pod pod1 --as=jill
+# kubectl get pods -n kube-system --as=jill
+# kubectl explain clusterrole
+# vi clusterrole.yaml
+# kubectl apply -f clusterrole.yaml
+# kubectl get clusterrole
+# kubectl get secrets --as=mark
+# kubectl auth can-i get secrets --all-namespaces --as=mark  => yes
+# kubectl auth can-i get pods --all-namespaces --as=mark     => No
+# kubectl get sa
+# kubectl get serviceAccount
+# kubectl describe serviceAccount
+# kubectl get secrets --as=pod1
+Error from server (Forbidden): secrets is forbidden: User "pod1" cannot list resource "secrets" in API group "" in the namespace "default"
+# kubectl auth can-i get secrets --as=pod1
+# kubectl auth can-i get pods --as=pod1  ==> No
+# kubectl auth can-i get rs --as=pod1    ==> No
+# kubectl auth can-i get deployment --as=pod1
+
+
+
+---------------------------------------------------------------------------------
+rolebinding.yaml
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-reader
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: developer-account
+  namespace: default
+roleRef:
+  kind: Role
+  name: pod-reader-role
+  apiGroup: rbac.authorization.k8s.io
+
+
+
+role.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: reader-role
+  namespace: default
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods","deployments","configmaps"]
+  verbs: ["get", "watch", "list", "create", "delete"]
+
+
+serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: developer-account
+
+
+History of commands to be executed for this
+   41  vi serviceaccount.yaml
+   42  cat servicesccount.yaml
+   43  cat serviceaccount.yaml
+   44  kubectl apply -f serviceaccount.yaml
+   45  kubectl get serviceaccount
+   46  kubectl get serviceaccount de
+   47  kubectl describe serviceaccount de
+   48  vi role.yaml
+   49  cat role.yaml
+   50  kubectl apply -f role.yaml
+   51* 
+   52  vi rolebinding.yaml
+   53  cat rolebinding.yaml
+   54  kubectl apply -f rolebinding.yaml
+
+
+
+
