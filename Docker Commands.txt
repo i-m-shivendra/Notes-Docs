@@ -1,0 +1,29 @@
+$ docker run <image>              -       To create a container
+$ docker run -it <image>          -       To run container in the interactive mode
+$ docker run <image> -d           -       To run a container in the background
+$ docker attach <containerID>     -  To attach to a container running in background
+$ docker stat <containerID>       -  To get the statistics of a running container
+$ docker top <containerID>        -  To see the processes withing a container
+$ docker stop <containerID>       -  To stop a running container
+$ docker kill <containerID>       -  To kill the processes inside a container
+$ docker rm <containerID>         -  To remove a container
+$ docker ps -a                    -  To list all the containers in the Docker host
+$ docker ps                       -  To list all the running containers
+$ docker ps -l                    -  To list the recently created container
+$ docker ps -q                    -  To view only the IDs of the running containers
+$ docker ps -lq                   -  To view ID of container that was started recently
+$ docker logs <containerID>       -  Fetch the log of the recently started container
+$ docker logs --tail 5 --follow <containerID>  -  Fetch log of same container dynamically
+
+ctrl P + ctrl Q  - Detaching from a container
+$ docker ps -a | grep <containerID> - checking the states of the container
+$ ps -ef | grep clock - How do we detach from a container started without -it option?
+$ docker run -d --name timeclock jpetazzo/clock - Naming a container
+
+$ docker images             -  To list all the images present in the Docker engine
+$ docker search nginx       -  To search for a particular image from Docker registry$
+$ docker pull nginx         -  To download an image from the Docker registry
+$ docker push newubuntu     -  To push a Docker image into the Docker registry
+
+
+
