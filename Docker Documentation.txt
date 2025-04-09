@@ -1,0 +1,121 @@
+Basics of docker
+
+-----------------------------------------
+
+Kernel is shared between the containers.
+The docker host kernel will be used by all container created.
+
+-----------------------------------------
+
+docker pull centos(It will download latest image)
+docker ps -a(List of all the containers)
+docker ps -a(List of all running containers)
+docker ps -l(display all details of last created container)
+docker run centos
+docker run -it centos
+
+
+-----------------------------------------------------
+
+Docker Images
+
+docker run -it fedora
+Registries - images are stored
+
+1. Docker hub
+2. Self hosted registry
+3. Third hosted registry
+
+--------------------------------------------------------
+
+Network Drivers:-
+
+1. Bridge Network driver
+   172.17.0.0/16
+   docker0 ==> 172.17.0.1
+
+
+2. Host Network driver
+3. None Network driver
+4. Container Network driver
+
+-----------------------------------------------
+
+hostname -i (for checking IP address only)
+docker network ls(for checking the available network drivers)
+docker run -it --name c3 --net none centos(explicitly providing drivers)
+docker network create -d null new none
+docker run -it --name myc1 --net newnw centos
+docker run -it --name myc3 --net container:myc2 centos
+docker ps -q (List of all running container id's)
+
+-----------------------------------------------------------
+
+docker run -it --name myc1 centos
+hostname -i (for checking the IP address only)
+ctrl-p,q  (to stay in the same container)
+ctrl+d  (to come out of the container)
+
+------------------------------------------------------------
+
+CNM - Container Network Model
+It uses two plug-ins
+
+IPAM plugin - Ip address assign to the containers
+Network plugin - It handles the deletion.
+
+-----------------------------------------------------------
+Tools of Linux Containers
+
+1. chroot
+2. Namespaces
+3. cgroups
+
+------------------------------------------------------------
+
+Docker Compose
+docker-compose.yml
+
+Two types of keys are used--
+1. Top level keys
+    version, services, network, volumes
+2. Service level keys
+    image, build
+
+key: value
+
+key:
+  -value1
+  -value2
+
+key:
+  subkey: subvalue
+  subkey: subvalue
+
+
+whoami (It is a command to check who am I)
+
+
+version: '2'
+services:
+    jai:
+      image: nginx
+    lava:
+      build: .
+
+--------------------------------------------------------
+
+Port Mapping:
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------
+
+cat /etc/os-release
+
